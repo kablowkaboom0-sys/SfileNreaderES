@@ -6,61 +6,63 @@
 <meta name="theme-color" content="#090b16">
 <title>SNES Player — Offline Console</title>
 <style>
-:root{color-scheme:dark;--bg:#090b16;--panel:#151a2b;--panel2:#1c2340;--line:#343d60;--muted:#a5aecb;--text:#f5f3ff;--accent:#a78bfa;--accent2:#62e5d1;--pink:#fb7185}
+:root{color-scheme:dark;--bg:#111214;--panel:#202225;--line:#414449;--muted:#a9aaad;--text:#f0f0ed;--accent:#aaa4c8;--accent2:#a7b5a5}
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-body{min-height:100dvh;background:radial-gradient(ellipse at 15% 10%,#30245a 0,transparent 36%),radial-gradient(ellipse at 90% 85%,#123b49 0,transparent 32%),var(--bg)}
+body{min-height:100dvh;background:#111214}
 button,select{font:inherit}
-button{border:1px solid var(--line);background:#252d49;color:#fff;border-radius:13px;padding:12px 16px;cursor:pointer;transition:transform .15s ease,border-color .15s ease,background .15s ease}
-button:hover{border-color:#8b80c9;background:#303a5d}
-button:active{transform:scale(.98);background:#414c75}
-button:focus-visible,select:focus-visible{outline:3px solid #a78bfa;outline-offset:3px}
-#startScreen{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:24px;position:relative;overflow:hidden}
-#startScreen:before,#startScreen:after{content:"";position:absolute;width:230px;height:230px;border:1px solid #a78bfa22;transform:rotate(45deg);pointer-events:none}
-#startScreen:before{top:-155px;left:8%}#startScreen:after{bottom:-165px;right:7%}
-.panel{position:relative;z-index:1;width:min(100%,590px);background:linear-gradient(145deg,#1a2036f5,#111627f5);border:1px solid #6b6a9b66;border-radius:26px;padding:clamp(22px,5vw,38px);box-shadow:0 28px 90px #0008,inset 0 1px #ffffff12}
+button{border:1px solid var(--line);background:#34373b;color:#f5f5f2;border-radius:9px;padding:12px 16px;cursor:pointer;transition:background .12s ease,border-color .12s ease}
+button:hover{border-color:#777b80;background:#41454a}
+button:active{background:#555a60}
+button:focus-visible,select:focus-visible{outline:2px solid #aaa4c8;outline-offset:3px}
+#startScreen{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:24px}
+.panel{width:min(100%,590px);background:#202225;border:1px solid #3b3e42;border-radius:17px;padding:clamp(22px,5vw,38px);box-shadow:0 16px 40px #0005}
 .brandline{display:flex;align-items:center;gap:12px;margin-bottom:24px}
-.brandmark{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,#a78bfa,#6c5ce7 55%,#48d8c5);display:grid;place-items:center;box-shadow:0 8px 24px #8b5cf655;flex:none}
-.brandmark span{font-size:21px;font-weight:950;letter-spacing:-2px;color:#111326;text-shadow:1px 1px #ffffff66}
-.brandmeta{display:grid;gap:3px}.brandmeta strong{font-size:13px;letter-spacing:.16em;text-transform:uppercase}.brandmeta span{font-size:11px;color:#9ba5c5;letter-spacing:.08em}
-h1{font-size:clamp(32px,7vw,48px);letter-spacing:-.045em;line-height:1.02;margin:0 0 12px}
+.brandmark{width:46px;height:46px;border-radius:11px;background:#d4d4d0;display:grid;place-items:center;flex:none}
+.brandmark span{font-size:20px;font-weight:950;letter-spacing:-2px;color:#28292b}
+.brandmeta{display:grid;gap:3px}.brandmeta strong{font-size:13px;letter-spacing:.13em;text-transform:uppercase}.brandmeta span{font-size:10px;color:#a3a5a8;letter-spacing:.07em}
+h1{font-size:clamp(32px,7vw,48px);letter-spacing:-.04em;line-height:1.02;margin:0 0 12px}
 .sub{color:var(--muted);margin:0 0 27px;line-height:1.6;max-width:48ch}
-.offline{display:inline-flex;align-items:center;gap:7px;border:1px solid #3d806f;background:#16372f88;color:#8ef0d8;padding:6px 10px;border-radius:99px;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:18px}
-.offline:before{content:"";width:7px;height:7px;border-radius:50%;background:#62e5d1;box-shadow:0 0 10px #62e5d1}
+.offline{display:inline-flex;align-items:center;gap:7px;border:1px solid #526452;background:#29332b;color:#c2d2c1;padding:6px 10px;border-radius:6px;font-size:10px;font-weight:750;letter-spacing:.09em;text-transform:uppercase;margin-bottom:18px}
+.offline:before{content:"";width:7px;height:7px;border-radius:50%;background:#9bb59b}
 .field{display:grid;gap:9px;margin:18px 0}
-label{font-weight:700;font-size:13px;color:#d9dcf4}
-select{width:100%;padding:14px 15px;border-radius:13px;border:1px solid #3a4263;background:#0e1425;color:white;appearance:auto}
+label{font-weight:700;font-size:13px;color:#dededb}
+select{width:100%;padding:14px 15px;border-radius:9px;border:1px solid #494c50;background:#17191b;color:white}
 #romPicker{display:none}
-#chooseRom{width:100%;font-weight:850;font-size:15px;letter-spacing:.01em;background:linear-gradient(100deg,#9b7cf4,#7467e9 58%,#55cfc1);border:0;color:#101225;padding:16px;border-radius:14px;box-shadow:0 10px 28px #7765dc44}
-#chooseRom:hover{filter:brightness(1.09);transform:translateY(-1px)}
-#chooseRom:disabled{opacity:.55;cursor:wait;transform:none}
-#status{min-height:24px;margin-top:15px;color:#aeb8d5;font-size:12px;overflow-wrap:anywhere;text-align:center}
-.privacy{display:flex;justify-content:center;align-items:center;gap:7px;color:#8f9bb9;font-size:11px;margin-top:12px}
-.privacy:before{content:"◆";color:var(--accent2);font-size:9px}
-.version{color:#737f9f;font-size:11px;margin-top:26px;text-align:center;letter-spacing:.08em}
+#chooseRom{width:100%;font-weight:800;font-size:15px;background:#d5d5d0;border:1px solid #e5e5e0;color:#202124;padding:15px;border-radius:9px}
+#chooseRom:hover{background:#e5e5df;border-color:#fff}
+#chooseRom:disabled{opacity:.55;cursor:wait}
+#status{min-height:24px;margin-top:15px;color:#b8babd;font-size:12px;overflow-wrap:anywhere;text-align:center}
+.privacy{display:flex;justify-content:center;align-items:center;gap:7px;color:#999da1;font-size:11px;margin-top:12px}
+.privacy:before{content:"◆";color:#a7b5a5;font-size:9px}
+.version{color:#85898d;font-size:11px;margin-top:26px;text-align:center;letter-spacing:.08em}
 #playScreen{display:none;min-height:100dvh;padding:16px;align-items:center;justify-content:center;flex-direction:column;gap:13px;overflow:auto}
-#stage{width:min(100vw - 32px, calc((100dvh - 205px)*8/7));aspect-ratio:8/7;max-height:calc(100dvh - 205px);background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid #7770ad;border-radius:15px;box-shadow:0 0 0 5px #171b31,0 18px 55px #0009}
+#stage{width:min(100vw - 32px, calc((100dvh - 205px)*8/7));aspect-ratio:8/7;max-height:calc(100dvh - 205px);background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid #55595e;border-radius:8px;box-shadow:0 8px 25px #0008}
 #game{width:100%;height:100%;background:#000}
 #game canvas{display:block;width:100%;height:100%;object-fit:contain}
 #toolbar{width:min(100%,900px);display:flex;justify-content:center;gap:9px;flex-wrap:wrap}
-#toolbar button{padding:10px 17px;font-size:13px;font-weight:750}
-#fullscreenBtn{background:#8f7cf0;color:#111225;border-color:transparent}
+#toolbar button{padding:10px 17px;font-size:13px;font-weight:700}
+#fullscreenBtn{background:#d5d5d0;color:#202124;border-color:#d5d5d0}
 #touchControls{width:min(100%,1100px);display:flex;justify-content:center;align-items:flex-start;gap:12px;flex-wrap:wrap;touch-action:none;user-select:none}
-.controller{background:linear-gradient(145deg,#1a2035,#111727);border:1px solid #3d4569;border-radius:18px;padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px;min-width:min(100%,330px);flex:1;box-shadow:0 12px 30px #0004}
-.controller h3{grid-column:1/-1;margin:0;color:#bcb5ff;font-size:12px;text-align:center;letter-spacing:.1em;text-transform:uppercase}
-.pad{display:grid;grid-template-columns:repeat(3,42px);grid-template-rows:repeat(3,42px);gap:3px;justify-content:center;align-content:center}
-.pad button{padding:0;border-radius:10px;font-size:18px;background:#2a3454;border-color:#485477}
-.pad .empty{visibility:hidden}
-.actions{display:grid;grid-template-columns:repeat(2,48px);grid-template-rows:repeat(2,48px);gap:5px;justify-content:center;align-content:center}
-.actions button{padding:0;border-radius:50%;font-weight:900;background:#35305e;border-color:#7769b5}
-.actions button:nth-child(2),.actions button:nth-child(3){background:#174b50;border-color:#388e8a}
-.aux{grid-column:1/-1;display:flex;justify-content:center;gap:6px;flex-wrap:wrap}
-.aux button{padding:8px 11px;font-size:11px;font-weight:800;letter-spacing:.06em;background:#202941}
-#playVersion{font-size:10px;color:#7783a3;letter-spacing:.1em}
-#playScreen.fullscreen{position:fixed;inset:0;z-index:9999;background:#080a12;padding:8px;min-height:100dvh}
+.controller{background:#202225;border:1px solid #45484c;border-radius:13px;padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px;min-width:min(100%,330px);flex:1}
+.controller h3{grid-column:1/-1;margin:0;color:#c7c8c5;font-size:11px;text-align:center;letter-spacing:.09em;text-transform:uppercase}
+.joystickArea{display:flex;align-items:center;justify-content:center;min-height:145px;touch-action:none}
+.joystick{width:126px;height:126px;border-radius:50%;position:relative;background:#303337;border:2px solid #555a60;box-shadow:inset 0 3px 12px #0008,0 3px 5px #0005;touch-action:none}
+.joystick:before{content:"";position:absolute;inset:25%;border:1px solid #656a70;border-radius:50%}
+.stickKnob{position:absolute;left:50%;top:50%;width:53px;height:53px;transform:translate(-50%,-50%);border-radius:50%;background:linear-gradient(145deg,#b8b9b6,#74777a);border:2px solid #d0d0ca;box-shadow:0 4px 8px #0008;pointer-events:none}
+.rightControls{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px}
+.shoulders{display:flex;justify-content:center;gap:12px;width:100%}
+.shoulders button{min-width:62px;padding:8px 13px;font-size:12px;font-weight:800;background:#4a4d51;border-color:#686c70}
+.actions{display:grid;grid-template-columns:repeat(2,46px);grid-template-rows:repeat(2,46px);gap:5px;justify-content:center;align-content:center}
+.actions button{padding:0;border-radius:50%;font-weight:900;background:#d7d7d2;color:#35363a;border:2px solid #eeeeea}
+.actions button:nth-child(2),.actions button:nth-child(3){background:#b9b9b3;color:#303136;border-color:#deded8}
+.aux{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.aux button{padding:7px 12px;font-size:10px;font-weight:800;letter-spacing:.06em;background:#45484c;border-color:#666a6e}
+#playVersion{font-size:10px;color:#85898d;letter-spacing:.1em}
+#playScreen.fullscreen{position:fixed;inset:0;z-index:9999;background:#111214;padding:8px;min-height:100dvh}
 #playScreen.fullscreen #stage{width:min(100vw - 16px, calc((100dvh - 175px)*8/7));max-height:calc(100dvh - 175px)}
 #playScreen.fullscreen #touchControls{max-height:30dvh;overflow:auto}
-@media(max-width:600px){#startScreen{padding:15px}.panel{border-radius:22px;padding:23px 19px}.brandline{margin-bottom:20px}#playScreen{padding:6px;gap:8px}#stage{width:min(100vw - 12px, calc((100dvh - 245px)*8/7));max-height:calc(100dvh - 245px);border-radius:10px}.controller{min-width:100%;padding:8px;gap:8px}.pad{grid-template-columns:repeat(3,36px);grid-template-rows:repeat(3,36px)}.actions{grid-template-columns:repeat(2,42px);grid-template-rows:repeat(2,42px)}#touchControls{gap:7px}#toolbar button{padding:9px 12px}}
+@media(max-width:600px){#startScreen{padding:15px}.panel{border-radius:14px;padding:23px 19px}.brandline{margin-bottom:20px}#playScreen{padding:6px;gap:8px}#stage{width:min(100vw - 12px, calc((100dvh - 245px)*8/7));max-height:calc(100dvh - 245px)}.controller{min-width:100%;padding:8px;gap:8px}.joystickArea{min-height:126px}.joystick{width:112px;height:112px}.stickKnob{width:48px;height:48px}.actions{grid-template-columns:repeat(2,42px);grid-template-rows:repeat(2,42px)}#touchControls{gap:7px}#toolbar button{padding:9px 12px}}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -83,7 +85,7 @@ select{width:100%;padding:14px 15px;border-radius:13px;border:1px solid #3a4263;
     <button id="chooseRom">Choose a game file&nbsp; →</button>
     <div id="status" role="status">Ready when you are.</div>
     <div class="privacy">Local file loading · No uploads · Works offline</div>
-    <div class="version">SNES PLAYER&nbsp; / &nbsp;v0.1.1</div>
+    <div class="version">SNES PLAYER&nbsp; / &nbsp;v0.1.2</div>
   </section>
 </main>
 <main id="playScreen">
@@ -93,7 +95,7 @@ select{width:100%;padding:14px 15px;border-radius:13px;border:1px solid #3a4263;
     <button id="backBtn">Back to start</button>
   </div>
   <section id="touchControls" aria-label="Touch controllers"></section>
-  <div id="playVersion">SNES PLAYER&nbsp; / &nbsp;v0.1.1</div>
+  <div id="playVersion">SNES PLAYER&nbsp; / &nbsp;v0.1.2</div>
 </main>
 <script src="snes-core.js"></script>
 <script>
@@ -128,19 +130,51 @@ function makeButton(label,code,extra){
  b.addEventListener("pointerup",release);b.addEventListener("pointercancel",release);b.addEventListener("lostpointercapture",release);
  return b;
 }
+function buildJoystick(player){
+ var area=document.createElement("div");area.className="joystickArea";
+ var base=document.createElement("div");base.className="joystick";base.setAttribute("role","group");base.setAttribute("aria-label",player.name+" directional joystick");
+ var knob=document.createElement("div");knob.className="stickKnob";base.appendChild(knob);area.appendChild(base);
+ var activeCodes=[];
+ function setDirections(dx,dy){
+  var next=[];
+  var threshold=.28;
+  if(Math.abs(dx)>threshold)next.push(player.map[dx<0?"left":"right"]);
+  if(Math.abs(dy)>threshold)next.push(player.map[dy<0?"up":"down"]);
+  activeCodes.forEach(function(code){if(next.indexOf(code)<0)keyEvent("keyup",code);});
+  next.forEach(function(code){if(activeCodes.indexOf(code)<0)keyEvent("keydown",code);});
+  activeCodes=next;
+ }
+ function move(e){
+  var r=base.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+  var max=r.width*.31,dx=e.clientX-cx,dy=e.clientY-cy,len=Math.sqrt(dx*dx+dy*dy);
+  if(len>max){dx=dx/len*max;dy=dy/len*max;}
+  knob.style.left=(50+dx/r.width*100)+"%";knob.style.top=(50+dy/r.height*100)+"%";
+  setDirections(dx/max,dy/max);
+ }
+ function reset(){
+  activeCodes.forEach(function(code){keyEvent("keyup",code);});activeCodes=[];
+  knob.style.left="50%";knob.style.top="50%";
+ }
+ base.addEventListener("pointerdown",function(e){e.preventDefault();base.setPointerCapture(e.pointerId);move(e);});
+ base.addEventListener("pointermove",function(e){if(base.hasPointerCapture&&base.hasPointerCapture(e.pointerId))move(e);});
+ base.addEventListener("pointerup",function(e){e.preventDefault();reset();});
+ base.addEventListener("pointercancel",reset);base.addEventListener("lostpointercapture",reset);
+ return area;
+}
 function buildController(player){
  var card=document.createElement("div");card.className="controller";
  var heading=document.createElement("h3");heading.textContent=player.name+" touch controls";card.appendChild(heading);
- var pad=document.createElement("div");pad.className="pad";
- var positions=[["","", "empty"],["↑","up"],["","", "empty"],["←","left"],["•",null],["→","right"],["","", "empty"],["↓","down"],["","", "empty"]];
- positions.forEach(function(item){if(!item[1]){var blank=document.createElement("span");blank.className="empty";pad.appendChild(blank);}else pad.appendChild(makeButton(item[0],player.map[item[1]]));});
- card.appendChild(pad);
- var right=document.createElement("div");right.className="actions";
- [["Y","y"],["X","x"],["B","b"],["A","a"]].forEach(function(item){right.appendChild(makeButton(item[0],player.map[item[1]]));});
- card.appendChild(right);
+ card.appendChild(buildJoystick(player));
+ var right=document.createElement("div");right.className="rightControls";
+ var shoulders=document.createElement("div");shoulders.className="shoulders";
+ [["L","l"],["R","r"]].forEach(function(item){shoulders.appendChild(makeButton(item[0],player.map[item[1]]));});
+ right.appendChild(shoulders);
+ var actions=document.createElement("div");actions.className="actions";
+ [["Y","y"],["X","x"],["B","b"],["A","a"]].forEach(function(item){actions.appendChild(makeButton(item[0],player.map[item[1]]));});
+ right.appendChild(actions);
  var aux=document.createElement("div");aux.className="aux";
- [["L","l"],["R","r"],["SELECT","select"],["START","start"]].forEach(function(item){aux.appendChild(makeButton(item[0],player.map[item[1]]));});
- card.appendChild(aux);return card;
+ [["SELECT","select"],["START","start"]].forEach(function(item){aux.appendChild(makeButton(item[0],player.map[item[1]]));});
+ right.appendChild(aux);card.appendChild(right);return card;
 }
 function renderControls(){
  touchControls.innerHTML="";
