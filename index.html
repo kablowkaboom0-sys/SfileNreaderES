@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#10131a">
+<title>SNES Player</title>
+<style>
+:root{color-scheme:dark;--bg:#10131a;--panel:#1b202b;--line:#343c4c;--muted:#aab3c2;--accent:#8bb8ff}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:#f4f6fa;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+body{min-height:100dvh}
+button,select{font:inherit}
+button{border:1px solid var(--line);background:#283244;color:#fff;border-radius:12px;padding:12px 16px;cursor:pointer}
+button:active{background:#40516c}
+#startScreen{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:24px}
+.panel{width:min(100%,560px);background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:0 18px 55px #0005}
+h1{font-size:clamp(28px,6vw,42px);margin:0 0 8px}
+.sub{color:var(--muted);margin:0 0 24px;line-height:1.5}
+.field{display:grid;gap:8px;margin:18px 0}
+label{font-weight:650}
+select{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#111722;color:white}
+#romPicker{display:none}
+#chooseRom{width:100%;font-weight:700;background:#315b91;border-color:#4779b8}
+#status{min-height:24px;margin-top:14px;color:var(--muted);overflow-wrap:anywhere}
+.version{color:#8d98aa;font-size:12px;margin-top:24px}
+#playScreen{display:none;min-height:100dvh;padding:12px;align-items:center;justify-content:center;flex-direction:column;gap:10px;overflow:auto}
+#stage{width:min(100vw - 24px, calc((100dvh - 190px)*8/7));aspect-ratio:8/7;max-height:calc(100dvh - 190px);background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid #333}
+#game{width:100%;height:100%;background:#000}
+#game canvas{display:block;width:100%;height:100%;object-fit:contain}
+#toolbar{width:min(100%,900px);display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+#toolbar button{padding:9px 13px}
+#touchControls{width:min(100%,1100px);display:flex;justify-content:center;align-items:flex-start;gap:12px;flex-wrap:wrap;touch-action:none;user-select:none}
+.controller{background:#171d28;border:1px solid var(--line);border-radius:14px;padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:12px;min-width:min(100%,330px);flex:1}
+.controller h3{grid-column:1/-1;margin:0;color:#b9c8df;font-size:13px;text-align:center}
+.pad{display:grid;grid-template-columns:repeat(3,42px);grid-template-rows:repeat(3,42px);gap:3px;justify-content:center;align-content:center}
+.pad button{padding:0;border-radius:9px;font-size:18px}
+.pad .empty{visibility:hidden}
+.actions{display:grid;grid-template-columns:repeat(2,48px);grid-template-rows:repeat(2,48px);gap:5px;justify-content:center;align-content:center}
+.actions button{padding:0;border-radius:50%;font-weight:800}
+.aux{grid-column:1/-1;display:flex;justify-content:center;gap:6px;flex-wrap:wrap}
+.aux button{padding:7px 10px;font-size:12px}
+#playVersion{font-size:11px;color:#778294}
+#playScreen.fullscreen{position:fixed;inset:0;z-index:9999;background:#080a0e;padding:8px;min-height:100dvh}
+#playScreen.fullscreen #stage{width:min(100vw - 16px, calc((100dvh - 175px)*8/7));max-height:calc(100dvh - 175px)}
+#playScreen.fullscreen #touchControls{max-height:30dvh;overflow:auto}
+@media(max-width:600px){#playScreen{padding:6px;gap:7px}#stage{width:min(100vw - 12px, calc((100dvh - 245px)*8/7));max-height:calc(100dvh - 245px)}.controller{min-width:100%;padding:7px;gap:7px}.pad{grid-template-columns:repeat(3,36px);grid-template-rows:repeat(3,36px)}.actions{grid-template-columns:repeat(2,42px);grid-template-rows:repeat(2,42px)}#touchControls{gap:6px}#toolbar button{padding:8px 10px}}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main id="startScreen">
+  <section class="panel">
+    <h1>SNES Player</h1>
+    <p class="sub">A standalone Super Nintendo emulator. Choose a ROM file stored on your device to play locally.</p>
+    <div class="field">
+      <label for="controlMode">On-screen controls</label>
+      <select id="controlMode">
+        <option value="hide" selected>Hide controls</option>
+        <option value="p1">1P controls</option>
+        <option value="p2">2P controls</option>
+      </select>
+    </div>
+    <input id="romPicker" type="file">
+    <button id="chooseRom">Choose SNES ROM</button>
+    <div id="status" role="status">Ready. ROMs are opened locally and are not uploaded.</div>
+    <div class="version">SNES Player v0.1.0</div>
+  </section>
+</main>
+<main id="playScreen">
+  <div id="stage"><div id="game"></div></div>
+  <div id="toolbar">
+    <button id="fullscreenBtn">Fullscreen</button>
+    <button id="backBtn">Back to start</button>
+  </div>
+  <section id="touchControls" aria-label="Touch controllers"></section>
+  <div id="playVersion">SNES Player v0.1.0</div>
+</main>
+<script src="snes-core.js"></script>
+<script>
+(function(){
+"use strict";
+var startScreen=document.getElementById("startScreen");
+var playScreen=document.getElementById("playScreen");
+var picker=document.getElementById("romPicker");
+var chooseRom=document.getElementById("chooseRom");
+var status=document.getElementById("status");
+var mode=document.getElementById("controlMode");
+var touchControls=document.getElementById("touchControls");
+var game=document.getElementById("game");
+var savedMode="hide";
+try{savedMode=localStorage.getItem("snes-control-mode")||"hide";}catch(e){}
+if(["hide","p1","p2"].indexOf(savedMode)<0)savedMode="hide";
+mode.value=savedMode;
+mode.addEventListener("change",function(){try{localStorage.setItem("snes-control-mode",mode.value);}catch(e){}});
+var players=[
+ {name:"Player 1",map:{up:"KeyW",down:"KeyS",left:"KeyA",right:"KeyD",a:"KeyZ",b:"KeyX",x:"KeyQ",y:"KeyE",l:"KeyC",r:"KeyV",select:"Digit1",start:"Digit2"}},
+ {name:"Player 2",map:{up:"ArrowUp",down:"ArrowDown",left:"ArrowLeft",right:"ArrowRight",a:"KeyP",b:"BracketLeft",x:"KeyO",y:"KeyI",l:"BracketRight",r:"Backslash",select:"Minus",start:"Equal"}}
+];
+function keyEvent(type,code){
+ var ev=new KeyboardEvent(type,{bubbles:true,cancelable:true,code:code,key:code});
+ document.dispatchEvent(ev);
+}
+function makeButton(label,code,extra){
+ var b=document.createElement("button");b.type="button";b.textContent=label;b.className=extra||"";
+ b.addEventListener("contextmenu",function(e){e.preventDefault();});
+ b.addEventListener("pointerdown",function(e){e.preventDefault();b.setPointerCapture&&b.setPointerCapture(e.pointerId);keyEvent("keydown",code);});
+ function release(e){if(e)e.preventDefault();keyEvent("keyup",code);}
+ b.addEventListener("pointerup",release);b.addEventListener("pointercancel",release);b.addEventListener("lostpointercapture",release);
+ return b;
+}
+function buildController(player){
+ var card=document.createElement("div");card.className="controller";
+ var heading=document.createElement("h3");heading.textContent=player.name+" touch controls";card.appendChild(heading);
+ var pad=document.createElement("div");pad.className="pad";
+ var positions=[["","", "empty"],["↑","up"],["","", "empty"],["←","left"],["•",null],["→","right"],["","", "empty"],["↓","down"],["","", "empty"]];
+ positions.forEach(function(item){if(!item[1]){var blank=document.createElement("span");blank.className="empty";pad.appendChild(blank);}else pad.appendChild(makeButton(item[0],player.map[item[1]]));});
+ card.appendChild(pad);
+ var right=document.createElement("div");right.className="actions";
+ [["Y","y"],["X","x"],["B","b"],["A","a"]].forEach(function(item){right.appendChild(makeButton(item[0],player.map[item[1]]));});
+ card.appendChild(right);
+ var aux=document.createElement("div");aux.className="aux";
+ [["L","l"],["R","r"],["SELECT","select"],["START","start"]].forEach(function(item){aux.appendChild(makeButton(item[0],player.map[item[1]]));});
+ card.appendChild(aux);return card;
+}
+function renderControls(){
+ touchControls.innerHTML="";
+ if(mode.value==="p1"||mode.value==="p2")touchControls.appendChild(buildController(players[0]));
+ if(mode.value==="p2")touchControls.appendChild(buildController(players[1]));
+ touchControls.hidden=mode.value==="hide";
+}
+function showGame(){startScreen.style.display="none";playScreen.style.display="flex";renderControls();}
+function showStart(){playScreen.style.display="none";startScreen.style.display="flex";}
+chooseRom.addEventListener("click",function(){picker.click();});
+picker.addEventListener("change",function(){
+ var file=picker.files&&picker.files[0];if(!file)return;
+ if(typeof window.embedSuperNintendo!=="function"){status.textContent="The SNES core did not load. Check that snes-core.js is present.";return;}
+ status.textContent="Loading "+file.name+"…";chooseRom.disabled=true;
+ file.arrayBuffer().then(function(buffer){
+  game.innerHTML="";
+  window.embedSuperNintendo({
+   container:"game",name:file.name,rom:buffer,soundEnabled:true,showMobileControls:false,
+   player1:players[0].map,player2:players[1].map,
+   cbStarted:function(){status.textContent="Loaded "+file.name;}
+  });
+  showGame();
+ }).catch(function(error){status.textContent="Could not read this ROM: "+error.message;chooseRom.disabled=false;});
+});
+document.getElementById("backBtn").addEventListener("click",function(){
+ if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(function(){});
+ showStart();
+});
+var fullscreenBtn=document.getElementById("fullscreenBtn");
+fullscreenBtn.addEventListener("click",function(){
+ if(document.fullscreenElement){if(document.exitFullscreen)document.exitFullscreen().catch(function(){});playScreen.classList.remove("fullscreen");fullscreenBtn.textContent="Fullscreen";}
+ else if(playScreen.requestFullscreen){playScreen.requestFullscreen().then(function(){playScreen.classList.add("fullscreen");fullscreenBtn.textContent="Exit fullscreen";}).catch(function(){playScreen.classList.toggle("fullscreen");fullscreenBtn.textContent=playScreen.classList.contains("fullscreen")?"Exit fullscreen":"Fullscreen";});}
+ else{playScreen.classList.toggle("fullscreen");fullscreenBtn.textContent=playScreen.classList.contains("fullscreen")?"Exit fullscreen":"Fullscreen";}
+});
+document.addEventListener("fullscreenchange",function(){
+ var active=document.fullscreenElement===playScreen;playScreen.classList.toggle("fullscreen",active);
+ fullscreenBtn.textContent=active?"Exit fullscreen":"Fullscreen";
+});
+document.addEventListener("visibilitychange",function(){
+ if(document.hidden)players.forEach(function(p){Object.keys(p.map).forEach(function(k){keyEvent("keyup",p.map[k]);});});
+});
+})();
+</script>
+</body>
+</html>
