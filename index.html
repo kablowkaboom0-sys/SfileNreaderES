@@ -148,7 +148,7 @@ picker.addEventListener("change",function(){
 });
 document.getElementById("backBtn").addEventListener("click",function(){
  if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(function(){});
- showStart();
+ window.location.reload();
 });
 var fullscreenBtn=document.getElementById("fullscreenBtn");
 fullscreenBtn.addEventListener("click",function(){
